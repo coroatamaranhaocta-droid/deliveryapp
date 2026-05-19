@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "OrderItem": {
+      "title": "Order Item",
+      "description": "An item within an order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "quantity": { "type": "number" },
+        "category": { "type": "string" }
+      },
+      "required": ["name", "price", "quantity"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer order in the lanchonete",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string", "description": "Customer name or nickname" },
+        "items": { "type": "array", "items": { "$ref": "OrderItem" } },
+        "total": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["pix", "credit", "cash", "debit"] },
+        "orderType": { "type": "string", "enum": ["delivery", "table"] },
+        "tableNumber": { "type": "string" },
+        "address": {
+          "type": "object",
+          "properties": {
+            "street": { "type": "string" },
+            "number": { "type": "string" },
+            "neighborhood": { "type": "string" },
+            "complement": { "type": "string" }
+          }
+        },
+        "status": { 
+          "type": "string", 
+          "enum": ["pending_confirmation", "preparing", "out_for_delivery", "delivered", "cancelled"],
+          "description": "Current status of the order"
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string", "description": "The UID of the user who placed the order (if logged in)" }
+      },
+      "required": ["customerName", "items", "total", "paymentMethod", "orderType", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection of orders placed by customers"
+    }
+  }
+}
