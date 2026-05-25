@@ -33,7 +33,8 @@ import {
   LogOut,
   LayoutDashboard,
   RefreshCw,
-  ArrowLeft
+  ArrowLeft,
+  ExternalLink
 } from 'lucide-react';
 
 // --- Types ---
@@ -428,123 +429,27 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-neutral-50 font-sans text-neutral-900">
-      {/* Header */}
-      <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button 
-              id="mobile-menu-trigger"
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 hover:bg-neutral-100 rounded-full transition-colors md:hidden"
-            >
-              <MenuIcon className="w-6 h-6" />
-            </button>
-            <button 
-              onClick={() => { setOrderStep('welcome'); setIsMobileMenuOpen(false); }}
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left active:scale-95"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=80&h=80" 
-                alt="Logo Pizzaria Coroataense"
-                className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-amber-500/20"
-              />
-              <h1 className="text-xl font-black tracking-tight text-neutral-900 lg:text-2xl italic">
-                Pizzaria<span className="text-amber-500">Coroataense</span>
-              </h1>
-            </button>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            {orderStep !== 'welcome' && (
-              <>
-                <button 
-                  onClick={() => setOrderStep('welcome')}
-                  className={`transition-colors hover:text-amber-500 ${orderStep === 'welcome' ? 'text-amber-500' : 'text-neutral-500'}`}
-                >
-                  Início
-                </button>
-                <button 
-                  onClick={() => { setActiveCategory('pizzas'); setOrderStep('menu'); }}
-                  className={`transition-colors hover:text-amber-500 ${orderStep === 'menu' && activeCategory === 'pizzas' ? 'text-amber-500' : 'text-neutral-500'}`}
-                >
-                  Pizzas
-                </button>
-                <button 
-                  onClick={() => { setActiveCategory('bebidas'); setOrderStep('menu'); }}
-                  className={`transition-colors hover:text-amber-500 ${orderStep === 'menu' && activeCategory === 'bebidas' ? 'text-amber-500' : 'text-neutral-500'}`}
-                >
-                  Bebidas
-                </button>
-              </>
-            )}
-          </nav>
-
-          <div className="flex items-center gap-2 lg:gap-4">
-            <div className="hidden sm:flex items-center gap-3 pr-2 border-r border-neutral-200">
-              <a href="#" className="p-2 text-neutral-400 hover:text-amber-500 hover:bg-amber-50 rounded-full transition-all">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 text-neutral-400 hover:text-amber-500 hover:bg-amber-50 rounded-full transition-all">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 text-neutral-400 hover:text-amber-500 hover:bg-amber-50 rounded-full transition-all">
-                <Twitter className="w-5 h-5" />
-              </a>
-            </div>
-
-            {isAdmin && (
-              <button 
-                onClick={() => setIsStaffPanelOpen(true)}
-                className="hidden sm:flex items-center gap-2 bg-neutral-100 px-4 py-2 rounded-full text-xs font-bold hover:bg-neutral-200 transition-colors"
-                id="staff-panel-btn"
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                Staff Panel
-              </button>
-            )}
-
-            {!user ? (
-              <button 
-                onClick={signInWithGoogle}
-                className="flex items-center gap-2 bg-white border border-neutral-200 px-4 py-2 rounded-full text-xs font-bold hover:bg-neutral-50 transition-colors shadow-sm"
-                id="login-btn"
-              >
-                <LogIn className="w-4 h-4" />
-                <span className="hidden xs:inline text-[10px] uppercase font-black tracking-widest">Entrar</span>
-              </button>
-            ) : (
-              <div className="flex items-center gap-3" id="user-info">
-                <img 
-                  src={user.photoURL || ''} 
-                  alt={user.displayName || ''} 
-                  className="w-8 h-8 rounded-full border border-amber-500/20"
-                />
-                <button 
-                  onClick={logout}
-                  className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
-                  title="Sair"
-                  id="logout-btn"
-                >
-                  <LogOut className="w-4 h-4 text-neutral-500" />
-                </button>
-              </div>
-            )}
-
-            <button 
-              id="cart-trigger"
-            onClick={() => setIsCartOpen(true)}
-            className="group relative p-2 bg-neutral-900 text-white rounded-full hover:bg-neutral-800 transition-all active:scale-95"
-          >
-            <ShoppingBag className="w-5 h-5" />
-            {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white animate-in zoom-in duration-300">
-                {totalItems}
-              </span>
-            )}
-          </button>
+      {/* Top Highlight Banner */}
+      <a 
+        href="https://pizzariacoroataense.netlify.app/#cardapio"
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="block bg-gradient-to-r from-red-650 via-amber-500 to-red-650 hover:brightness-105 transition-all text-white py-3 px-4 shadow-lg text-center relative z-50 cursor-pointer border-b border-white/10"
+        style={{ background: 'linear-gradient(90deg, #dc2626 0%, #f59e0b 50%, #dc2626 100%)' }}
+      >
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 text-xs sm:text-sm font-bold">
+          <span className="bg-white/25 px-2 py-0.5 rounded text-[10px] sm:text-xs font-black uppercase tracking-widest animate-pulse">
+            🔥 DESTAQUE
+          </span>
+          <span className="tracking-wide">
+            Clique aqui para ver nosso site completo com promoções exclusivas e novidades!
+          </span>
+          <span className="inline-flex items-center gap-1 bg-white text-neutral-900 px-3.5 py-1 rounded-full text-[11px] font-black tracking-widest uppercase shadow-md transition-transform transform hover:scale-105">
+            ACESSAR SITE
+            <ExternalLink className="w-3.5 h-3.5" />
+          </span>
         </div>
-      </div>
-    </header>
+      </a>
 
       <main className={`${orderStep === 'welcome' ? 'max-w-none px-0 py-0' : 'max-w-7xl mx-auto px-4 py-8'}`}>
         <AnimatePresence mode="wait">
@@ -555,7 +460,7 @@ export default function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, y: -20 }}
               onMouseMove={handleMouseMove}
-              className="relative min-h-[calc(100vh-64px)] w-full flex flex-col items-center justify-center overflow-hidden bg-neutral-50/50"
+              className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-neutral-50/50"
             >
               {/* Background Glows */}
               <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-amber-500/5 blur-[100px] rounded-full -z-10 animate-pulse" />
@@ -646,9 +551,22 @@ export default function App() {
                       onClick={() => setOrderStep('menu')}
                       className="group bg-neutral-900 text-white px-8 py-5 rounded-[2rem] font-bold text-lg flex items-center justify-center gap-3 hover:bg-neutral-800 transition-all shadow-2xl shadow-neutral-900/20 active:scale-95 w-full sm:w-auto"
                     >
-                      Acessar Cardápio
-                      <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                      Acessar Cardápio Local
+                      <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform text-amber-500" />
                     </button>
+                    
+                    <a 
+                      href="https://pizzariacoroataense.netlify.app/#cardapio"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative overflow-hidden bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white px-8 py-5 rounded-[2rem] font-black text-lg flex items-center justify-center gap-3 transition-all shadow-2xl shadow-amber-500/30 active:scale-95 w-full sm:w-auto border border-amber-400"
+                    >
+                      {/* Reflection shine effect */}
+                      <span className="absolute inset-x-0 h-full w-12 bg-white/20 transform -skew-x-12 -translate-x-16 group-hover:translate-x-[400px] transition-transform duration-1000 ease-out" />
+                      
+                      <span>Visitar Site Completo</span>
+                      <ExternalLink className="w-5 h-5 animate-pulse text-white" />
+                    </a>
                   </div>
                 </div>
 
@@ -676,7 +594,7 @@ export default function App() {
                             repeat: Infinity,
                             ease: "easeInOut"
                           }}
-                          src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1000&h=1000" 
+                          src="https://i.ibb.co/Lz5sVj1t/1670085848638b7cd8e5287-medium.jpg" 
                           alt="Nossas Especialidades"
                           className="w-full h-full object-cover"
                         />
@@ -755,28 +673,47 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               className="space-y-8"
             >
-              {/* Category Selector Mobile */}
-              <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide md:hidden">
-                <button
-                  onClick={() => setActiveCategory('pizzas')}
-                  className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                    activeCategory === 'pizzas' 
-                      ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' 
-                      : 'bg-white text-neutral-600 border border-neutral-200'
-                  }`}
-                >
-                  Pizzas Especiais
-                </button>
-                <button
-                  onClick={() => setActiveCategory('bebidas')}
-                  className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                    activeCategory === 'bebidas' 
-                      ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' 
-                      : 'bg-white text-neutral-600 border border-neutral-200'
-                  }`}
-                >
-                  Bebidas & Refrescos
-                </button>
+              {/* Category Selector & Home navigation */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 border-b border-neutral-200">
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setOrderStep('welcome')}
+                    className="p-3 bg-white border border-neutral-200 hover:bg-neutral-50 rounded-2xl flex items-center justify-center text-neutral-600 transition-all font-bold hover:text-amber-500 group shadow-sm active:scale-95"
+                    title="Voltar ao início"
+                  >
+                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+                    <span className="ml-2 text-xs uppercase tracking-widest font-black">Início</span>
+                  </button>
+                  <div className="text-left">
+                    <h1 className="text-lg font-black tracking-tight text-neutral-900 italic">
+                      Pizzaria<span className="text-amber-500">Coroataense</span>
+                    </h1>
+                    <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Cardápio Oficial</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                  <button
+                    onClick={() => setActiveCategory('pizzas')}
+                    className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                      activeCategory === 'pizzas' 
+                        ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' 
+                        : 'bg-white text-neutral-600 border border-neutral-200'
+                    }`}
+                  >
+                    Pizzas Especiais
+                  </button>
+                  <button
+                    onClick={() => setActiveCategory('bebidas')}
+                    className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                      activeCategory === 'bebidas' 
+                        ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' 
+                        : 'bg-white text-neutral-600 border border-neutral-200'
+                    }`}
+                  >
+                    Bebidas & Refrescos
+                  </button>
+                </div>
               </div>
 
               {/* Title Section */}
@@ -790,6 +727,41 @@ export default function App() {
                     : 'Acompanhamento perfeito para sua refeição, desde sucos naturais até cervejas especiais.'}
                 </p>
               </div>
+
+              {/* Promo Banner Card */}
+              <motion.div 
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="relative overflow-hidden bg-gradient-to-r from-neutral-900 via-neutral-850 to-neutral-900 text-white rounded-[2.5rem] p-6 sm:p-8 border border-neutral-800 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6"
+                style={{ background: 'linear-gradient(135deg, #171717 0%, #262626 100%)' }}
+              >
+                {/* Background ambient lighting */}
+                <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl -z-10" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-500/5 rounded-full blur-2xl -z-10" />
+
+                <div className="space-y-3 text-center md:text-left max-w-xl">
+                  <span className="inline-flex items-center gap-1.5 bg-amber-500/15 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">
+                    ⭐️ SITE OFICIAL COMPLETO
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black italic tracking-tight leading-tight">
+                    Quer conferir mais novidades e promoções exclusivas?
+                  </h3>
+                  <p className="text-xs sm:text-sm text-neutral-400 font-medium leading-relaxed">
+                    Clique abaixo para visitar a nossa plataforma principal oficial. Lá você terá acesso ao cardápio estendido, reservas, eventos especiais e facilidade direta de contato!
+                  </p>
+                </div>
+
+                <a 
+                  href="https://pizzariacoroataense.netlify.app/#cardapio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative overflow-hidden bg-amber-500 text-neutral-950 px-6 py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 w-full md:w-auto shrink-0 transition-all hover:bg-amber-400 shadow-xl shadow-amber-500/10 hover:shadow-amber-500/20 active:scale-95 text-center uppercase tracking-wider"
+                >
+                  <span>ACESSAR SITE OFICIAL</span>
+                  <ExternalLink className="w-4 h-4 text-neutral-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </a>
+              </motion.div>
 
               {/* Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1534,19 +1506,61 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Floating Action Button (Optional extra polish) */}
-      {totalItems > 0 && orderStep === 'menu' && !isCartOpen && (
+      {/* Floating Action Buttons & Auth controls */}
+      {orderStep === 'menu' && !isCartOpen && (
         <motion.button
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           exit={{ y: 100 }}
           onClick={() => setIsCartOpen(true)}
-          className="fixed bottom-6 right-6 md:hidden bg-amber-500 text-white px-6 py-4 rounded-3xl font-black shadow-2xl shadow-amber-500/40 flex items-center gap-3 z-30"
+          className="fixed bottom-6 right-6 bg-neutral-900 border border-neutral-800 text-white px-6 py-4 rounded-3xl font-black shadow-2xl flex items-center gap-3 z-30 hover:bg-neutral-800 transition-all active:scale-95"
         >
-          <ShoppingBag className="w-6 h-6" />
-          Ver Meus {totalItems} Itens
+          <ShoppingBag className="w-5 h-5 text-amber-500 animate-bounce" />
+          <span>Meu Carrinho ({totalItems})</span>
+          <span className="bg-amber-500 text-neutral-900 px-2 py-0.5 rounded-lg text-xs font-mono font-bold">R$ {subtotal.toFixed(2)}</span>
         </motion.button>
       )}
+
+      {/* Floating Staff Button & Login Status */}
+      <div className="fixed bottom-6 left-6 z-30 flex items-center gap-2">
+        {isAdmin && (
+          <button 
+            onClick={() => setIsStaffPanelOpen(true)}
+            className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 text-white px-5 py-4 rounded-3xl font-black shadow-2xl hover:bg-neutral-800 transition-all active:scale-95 text-xs uppercase tracking-widest whitespace-nowrap"
+            id="staff-panel-btn"
+          >
+            <LayoutDashboard className="w-5 h-5 text-amber-500" />
+            <span className="hidden sm:inline">Painel Admin</span>
+          </button>
+        )}
+        
+        {user ? (
+          <div className="bg-white/90 backdrop-blur-md border border-neutral-200/80 p-1.5 rounded-full flex items-center gap-2 shadow-xl" id="user-info">
+            <img 
+              src={user.photoURL || ''} 
+              alt={user.displayName || ''} 
+              className="w-8 h-8 rounded-full border border-amber-500/20 object-cover"
+            />
+            <button 
+              onClick={logout}
+              className="p-2 hover:bg-neutral-100 rounded-full transition-colors text-neutral-500 hover:text-red-500"
+              title="Sair"
+              id="logout-btn"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <button 
+            onClick={signInWithGoogle}
+            className="bg-white/90 backdrop-blur-md border border-neutral-200 p-3.5 rounded-full flex items-center justify-center shadow-xl hover:bg-neutral-50 text-neutral-500 hover:text-amber-500 transition-all active:scale-95"
+            title="Entrar com Google"
+            id="login-btn"
+          >
+            <LogIn className="w-5 h-5" />
+          </button>
+        )}
+      </div>
 
       {/* Staff Dashboard Overlay */}
       <AnimatePresence>
