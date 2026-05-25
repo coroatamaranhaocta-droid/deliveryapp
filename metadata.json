@@ -1,6 +1,6 @@
 {
-  "name": "Lanchonete Bom Sabor",
-  "description": "Cardápio interativo profissional para a Lanchonete Bom Sabor, com categorias de lanches, bebidas e checkout integrado.",
+  "name": "Pizzaria Coroataense",
+  "description": "Cardápio interativo profissional para a Pizzaria Coroataense, com categorias de pizzas, bebidas e checkout integrado.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

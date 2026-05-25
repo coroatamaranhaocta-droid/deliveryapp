@@ -5,7 +5,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { QRCodeSVG } from 'qrcode.react';
 import { db, auth, handleFirestoreError, OperationType, signInWithGoogle, logout } from './lib/firebase';
 import { collection, addDoc, serverTimestamp, doc, getDocFromServer, getDoc, query, orderBy, limit, onSnapshot, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -43,7 +42,7 @@ interface MenuItem {
   name: string;
   description: string;
   price: number;
-  category: 'bebidas' | 'lanches';
+  category: 'bebidas' | 'pizzas';
   image: string;
 }
 
@@ -55,60 +54,60 @@ type PaymentMethod = 'credit' | 'pix' | 'cash';
 
 // --- Mock Data ---
 const MENU_ITEMS: MenuItem[] = [
-  // Lanches
+  // Pizzas
   {
-    id: 'l1',
-    name: 'X-Burger Artesanal',
-    description: 'Blend de 180g, queijo cheddar, bacon crocante, alface, tomate e maionese da casa.',
-    price: 32.90,
-    category: 'lanches',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&h=300'
+    id: 'p1',
+    name: 'Pizza Calabresa Especial',
+    description: 'Molho de tomate artesanal, muçarela premium, calabresa defumada fatiada, cebola roxa e orégano.',
+    price: 42.90,
+    category: 'pizzas',
+    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&h=300'
   },
   {
-    id: 'l2',
-    name: 'Batata Frita Suprema',
-    description: 'Batatas crocantes com cobertura de queijo derretido e pedaços de bacon.',
-    price: 18.50,
-    category: 'lanches',
-    image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=400&h=300'
-  },
-  {
-    id: 'l3',
-    name: 'Combo de Pastéis (5 un)',
-    description: 'Mix de sabores: carne, queijo, palmito, frango e chocolate.',
-    price: 25.00,
-    category: 'lanches',
-    image: 'https://images.unsplash.com/photo-1585238341267-1cfec2046a55?auto=format&fit=crop&w=400&h=300'
-  },
-  {
-    id: 'l4',
-    name: 'Coxinha de Frango c/ Catupiry',
-    description: 'A clássica coxinha brasileira, massa leve e muito recheio. Unidade grande.',
-    price: 8.50,
-    category: 'lanches',
-    image: 'https://tse3.mm.bing.net/th/id/OIP.qBQ67p0YvHXNpr5_XNvnnQHaE_?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'
-  },
-  {
-    id: 'l5',
-    name: 'Camarão Frito Crocante',
-    description: 'Camarões selecionados empanados na farinha panko. Acompanha molho tártaro.',
+    id: 'p2',
+    name: 'Pizza Portuguesa Tradicional',
+    description: 'Molho de tomate fresco, muçarela, presunto cozido fatiado, ovos, cebola roxa, ervilha fresca e azeitonas.',
     price: 45.90,
-    category: 'lanches',
-    image: 'https://images.unsplash.com/photo-1559742811-822873691df8?auto=format&fit=crop&w=400&h=300'
+    category: 'pizzas',
+    image: 'https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=400&h=300'
   },
   {
-    id: 'l6',
-    name: 'Esfirras Sortidas (3 un)',
-    description: 'Esfirras abertas de carne, queijo e escarola.',
-    price: 15.00,
-    category: 'lanches',
-    image: 'https://guiadacozinha.com.br/wp-content/uploads/2020/04/esfirra-legumes-ricota-1.jpg'
+    id: 'p3',
+    name: 'Pizza Margherita Suprema',
+    description: 'Molho de tomate artesanal, muçarela, fatias de tomate fresco, manjericão fresco e azeite extra virgem.',
+    price: 39.90,
+    category: 'pizzas',
+    image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=400&h=300'
+  },
+  {
+    id: 'p4',
+    name: 'Pizza Quatro Queijos Premium',
+    description: 'Molho de tomate, muçarela de búfala, provolone defumado, queijo gorgonzola cremoso e parmesão ralado.',
+    price: 48.90,
+    category: 'pizzas',
+    image: 'https://images.unsplash.com/photo-1544982503-9f984c14501a?auto=format&fit=crop&w=400&h=300'
+  },
+  {
+    id: 'p5',
+    name: 'Pizza Frango com Catupiry',
+    description: 'Molho de tomate, muçarela, peito de frango desfiado temperado com ervas finas e o legítimo Catupiry.',
+    price: 46.50,
+    category: 'pizzas',
+    image: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=400&h=300'
+  },
+  {
+    id: 'p6',
+    name: 'Pizza Romeu & Julieta (Doce)',
+    description: 'Muçarela premium selecionada, fatias finas de goiabada cascão e toque aveludado de Catupiry.',
+    price: 44.00,
+    category: 'pizzas',
+    image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=400&h=300'
   },
   // Bebidas
   {
     id: 'b1',
     name: 'Suco Natural de Laranja',
-    description: 'Espremido na hora, 100% fruta, 400ml.',
+    description: 'Espremido na hora, 100% fruta, copo de 400ml super gelado.',
     price: 10.00,
     category: 'bebidas',
     image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=400&h=300'
@@ -124,7 +123,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'b3',
     name: 'Refrigerante Lata',
-    description: 'Opções: Coca-cola, Guaraná, Soda. 350ml.',
+    description: 'Opções de Coca-cola (Original ou Zero), Guaraná Antárctica, Soda. 350ml.',
     price: 6.50,
     category: 'bebidas',
     image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&h=300'
@@ -135,7 +134,7 @@ const MENU_ITEMS: MenuItem[] = [
 
 export default function App() {
   const [orderStep, setOrderStep] = useState<'welcome' | 'menu' | 'checkout' | 'payment-detail' | 'success'>('welcome');
-  const [activeCategory, setActiveCategory] = useState<'bebidas' | 'lanches'>('lanches');
+  const [activeCategory, setActiveCategory] = useState<'bebidas' | 'pizzas'>('pizzas');
   const [cart, setCart] = useState<CartItem[]>([]);
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
@@ -164,7 +163,7 @@ export default function App() {
 
   const pixPayload = useMemo(() => {
     // Standard PIX Static Payload Generation (Minimal implementation for visual/copy purposes)
-    const merchantName = 'BOM SABOR';
+    const merchantName = 'PIZZARIA COROATAENSE';
     const merchantCity = 'SAO PAULO';
     const amount = subtotal.toFixed(2);
     
@@ -445,12 +444,12 @@ export default function App() {
               className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left active:scale-95"
             >
               <img 
-                src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=80&h=80" 
-                alt="Logo Bom Sabor"
+                src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=80&h=80" 
+                alt="Logo Pizzaria Coroataense"
                 className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-amber-500/20"
               />
-              <h1 className="text-xl font-black tracking-tight text-neutral-900 lg:text-2xl">
-                Bom<span className="text-amber-500">Sabor</span>
+              <h1 className="text-xl font-black tracking-tight text-neutral-900 lg:text-2xl italic">
+                Pizzaria<span className="text-amber-500">Coroataense</span>
               </h1>
             </button>
           </div>
@@ -465,10 +464,10 @@ export default function App() {
                   Início
                 </button>
                 <button 
-                  onClick={() => { setActiveCategory('lanches'); setOrderStep('menu'); }}
-                  className={`transition-colors hover:text-amber-500 ${orderStep === 'menu' && activeCategory === 'lanches' ? 'text-amber-500' : 'text-neutral-500'}`}
+                  onClick={() => { setActiveCategory('pizzas'); setOrderStep('menu'); }}
+                  className={`transition-colors hover:text-amber-500 ${orderStep === 'menu' && activeCategory === 'pizzas' ? 'text-amber-500' : 'text-neutral-500'}`}
                 >
-                  Lanches
+                  Pizzas
                 </button>
                 <button 
                   onClick={() => { setActiveCategory('bebidas'); setOrderStep('menu'); }}
@@ -626,9 +625,9 @@ export default function App() {
                   >
                     <h1 className="text-sm font-black text-amber-500 uppercase tracking-[0.4em] mb-2 block">Premium Experience</h1>
                     <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-neutral-900 leading-[0.95] tracking-tighter">
-                      Bom Sabor: <br className="hidden sm:block" />
+                      Pizzaria <br className="hidden sm:block" />
                       <span className="text-amber-500 italic relative">
-                        Incrível.
+                        Coroataense
                         <motion.span 
                           initial={{ scaleX: 0 }}
                           animate={{ scaleX: 1 }}
@@ -638,7 +637,7 @@ export default function App() {
                       </span>
                     </h2>
                     <p className="text-lg sm:text-xl text-neutral-500 font-medium max-w-md mx-auto lg:mx-0 leading-relaxed">
-                      Descubra o verdadeiro sabor artesanal com ingredientes frescos e amor em cada mordida.
+                      A melhor pizza de Coroatá. Forno a lenha, ingredientes selecionados e bordas incrivelmente recheadas.
                     </p>
                   </motion.div>
 
@@ -650,21 +649,6 @@ export default function App() {
                       Acessar Cardápio
                       <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                     </button>
-                    
-                    {/* QR Code de Acesso Rápido */}
-                    <div className="flex items-center gap-4 p-3 bg-white border-2 border-neutral-100 rounded-[2rem] shadow-sm">
-                      <div className="bg-neutral-50 p-2 rounded-2xl">
-                        <img 
-                          src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(window.location.href)}`}
-                          alt="Acesso via QR Code"
-                          className="w-12 h-12"
-                        />
-                      </div>
-                      <div className="pr-4">
-                        <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Acesso Rápido</p>
-                        <p className="text-xs font-bold text-neutral-500">Escaneie para entrar</p>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
@@ -692,14 +676,14 @@ export default function App() {
                             repeat: Infinity,
                             ease: "easeInOut"
                           }}
-                          src="https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&w=1000&h=1000" 
+                          src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1000&h=1000" 
                           alt="Nossas Especialidades"
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
                         <div className="absolute bottom-10 left-10 right-10">
                           <p className="text-[10px] font-black text-amber-400 uppercase tracking-[0.3em] mb-2">Nossa Especialidade</p>
-                          <h4 className="text-3xl font-black text-white italic">Hambúrguer Gourmet</h4>
+                          <h4 className="text-3xl font-black text-white italic">Pizza de Forno a Lenha</h4>
                         </div>
                       </div>
                     </motion.div>
@@ -720,9 +704,9 @@ export default function App() {
                       className="absolute -top-10 -right-10 z-20 w-32 h-32 md:w-40 md:h-40 bg-white rounded-3xl shadow-2xl p-2 border-4 border-white overflow-hidden"
                     >
                       <img 
-                        src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=300&h=300"
+                        src="https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=300&h=300"
                         className="w-full h-full object-cover rounded-2xl"
-                        alt="Batatas"
+                        alt="Pizza Portuguesa"
                       />
                     </motion.div>
 
@@ -774,14 +758,14 @@ export default function App() {
               {/* Category Selector Mobile */}
               <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide md:hidden">
                 <button
-                  onClick={() => setActiveCategory('lanches')}
+                  onClick={() => setActiveCategory('pizzas')}
                   className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                    activeCategory === 'lanches' 
+                    activeCategory === 'pizzas' 
                       ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' 
                       : 'bg-white text-neutral-600 border border-neutral-200'
                   }`}
                 >
-                  Lanches Principais
+                  Pizzas Especiais
                 </button>
                 <button
                   onClick={() => setActiveCategory('bebidas')}
@@ -798,11 +782,11 @@ export default function App() {
               {/* Title Section */}
               <div>
                 <h2 className="text-3xl font-extrabold text-neutral-900 lg:text-4xl">
-                  {activeCategory === 'lanches' ? 'Nossos Lanches' : 'Bebidas Geladas'}
+                  {activeCategory === 'pizzas' ? 'Nossas Pizzas' : 'Bebidas Geladas'}
                 </h2>
                 <p className="mt-2 text-neutral-500 max-w-2xl">
-                  {activeCategory === 'lanches' 
-                    ? 'Preparados com ingredientes frescos e selecionados para garantir o melhor sabor em cada mordida.'
+                  {activeCategory === 'pizzas' 
+                    ? 'Nossas pizzas são preparadas de forma totalmente artesanal e assadas no forno a lenha, com ingredientes selecionados.'
                     : 'Acompanhamento perfeito para sua refeição, desde sucos naturais até cervejas especiais.'}
                 </p>
               </div>
@@ -1120,7 +1104,7 @@ export default function App() {
                     />
                   ) : (
                     <>
-                      {paymentMethod === 'pix' ? 'Gerar QR Code PIX' : 'Confirmar e Finalizar'}
+                      {paymentMethod === 'pix' ? 'Gerar Código PIX' : 'Confirmar e Finalizar'}
                       <ChevronRight className="w-5 h-5" />
                     </>
                   )}
@@ -1161,20 +1145,17 @@ export default function App() {
                     </motion.div>
                   </div>
                   <h2 className="text-2xl font-black italic tracking-tight">Pagamento via <span className="text-amber-500">PIX</span></h2>
-                  <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Escaneie ou copie o código</p>
+                  <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Copie o código PIX abaixo</p>
                 </div>
 
                 <div className="bg-neutral-50 rounded-[2.5rem] p-6 border-2 border-dashed border-neutral-200 flex flex-col items-center justify-center space-y-6">
                   {pixStatus === 'idle' || pixStatus === 'failed' ? (
                     <>
-                      <div className="bg-white p-6 rounded-3xl shadow-xl shadow-neutral-200/50 border border-neutral-100">
-                        <QRCodeSVG 
-                          value={pixPayload}
-                          size={200}
-                          level="H"
-                          includeMargin={false}
-                          className="w-full h-auto max-w-[200px]"
-                        />
+                      <div className="w-full space-y-4 text-center">
+                        <div className="bg-amber-100/50 text-amber-800 p-4 rounded-2xl border border-amber-200 text-xs font-bold leading-relaxed">
+                          Chave PIX da Pizzaria Coroataense:<br/>
+                          <span className="font-mono text-sm tracking-widest text-neutral-800 font-black">{pixKey}</span>
+                        </div>
                       </div>
                       
                       <div className="w-full space-y-3">
@@ -1505,11 +1486,11 @@ export default function App() {
               <div className="flex items-center justify-between mb-12">
                 <div className="flex items-center gap-3">
                    <img 
-                    src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=80&h=80" 
-                    alt="Logo Bom Sabor"
+                    src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=80&h=80" 
+                    alt="Logo Pizzaria Coroataense"
                     className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-amber-500/20"
                   />
-                  <h2 className="text-xl font-black italic">Bom<span className="text-amber-500">Sabor</span></h2>
+                  <h2 className="text-xl font-black italic">Pizzaria<span className="text-amber-500">Coroataense</span></h2>
                 </div>
                 <button onClick={() => setIsMobileMenuOpen(false)}>
                   <X className="w-6 h-6" />
@@ -1526,10 +1507,10 @@ export default function App() {
                       Início
                     </button>
                     <button 
-                      onClick={() => { setActiveCategory('lanches'); setIsMobileMenuOpen(false); setOrderStep('menu'); }}
-                      className={`w-full text-left text-2xl font-black hover:text-amber-500 transition-colors ${orderStep === 'menu' && activeCategory === 'lanches' ? 'text-amber-500' : 'text-neutral-400'}`}
+                      onClick={() => { setActiveCategory('pizzas'); setIsMobileMenuOpen(false); setOrderStep('menu'); }}
+                      className={`w-full text-left text-2xl font-black hover:text-amber-500 transition-colors ${orderStep === 'menu' && activeCategory === 'pizzas' ? 'text-amber-500' : 'text-neutral-400'}`}
                     >
-                      Lanches
+                      Pizzas
                     </button>
                     <button 
                       onClick={() => { setActiveCategory('bebidas'); setIsMobileMenuOpen(false); setOrderStep('menu'); }}
